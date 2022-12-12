@@ -8,23 +8,23 @@ using MailKit.Net.Smtp;
 using MailKit;
 using MimeKit;
 
-namespace Appointment.Controllers
+namespace Mail.Controllers
 {
     [Route("api/[controller]")]
     public class SampleDataController : Controller
     {
-        private readonly Entities.AppointmentContext _context;
-        public SampleDataController(Entities.AppointmentContext context)
+        private readonly Entities.MailContext _context;
+        public SampleDataController(Entities.MailContext context)
         {
             _context = context;
         }
         //api/PostTodoItem
         [HttpPost("[action]")]
-        public async Task<ActionResult<int>> CreateAppointment([FromBody] Entities.Appointment item)
+        public async Task<ActionResult<int>> CreateMail([FromBody] Entities.Mail item)
         {
             try
             {
-                _context.Appointments.Add(item);
+                _context.Mails.Add(item);
                 var result = await _context.SaveChangesAsync();
 
                 //Sending email
@@ -36,11 +36,11 @@ namespace Appointment.Controllers
                 //To address
                 message.To.Add(new MailboxAddress("Sachin Samrat Medavarapu", "saivaibhav90@gmail.com"));
                 //Subject
-                message.Subject = "Appointment confirmed";
+                message.Subject = "Mail confirmed";
                 //Body
                 message.Body = new TextPart("plain")
                 {
-                    Text = "Appointment confirmed"
+                    Text = "Mail confirmed"
                 };
 
 
@@ -59,7 +59,7 @@ namespace Appointment.Controllers
                     client.Send(message);
                     client.Disconnect(true);
                 }
-                return item.AppointmentID;
+                return item.MailID;
             }
             catch (Exception ex)
             {
@@ -70,11 +70,11 @@ namespace Appointment.Controllers
 
         // GET api/SampleData/5  
         [HttpGet("{id}")]
-        public async Task<ActionResult<Entities.Appointment>> GetDetails(int id)
+        public async Task<ActionResult<Entities.Mail>> GetDetails(int id)
         {
             try
             {
-                var student = await _context.Appointments.FirstOrDefaultAsync(b => b.AppointmentID == id);
+                var student = await _context.Mails.FirstOrDefaultAsync(b => b.MailID == id);
                 return student;
             }
             catch (Exception ex)
@@ -86,14 +86,14 @@ namespace Appointment.Controllers
 
         //Updating the details.
         [HttpPost("[action]")]
-        public async Task<ActionResult<int>> UpdateTodoItem([FromBody] Entities.Appointment item)
+        public async Task<ActionResult<int>> UpdateTodoItem([FromBody] Entities.Mail item)
         {
             try
             {
-                _context.Appointments.Update(item);
+                _context.Mails.Update(item);
                 var result = await _context.SaveChangesAsync();
 
-                return item.AppointmentID;
+                return item.MailID;
             }
             catch (Exception ex)
             {
@@ -102,15 +102,15 @@ namespace Appointment.Controllers
             return null;
         }
 
-        //Deleting the appointment
+        //Deleting the Mail
         [HttpPost("[action]")]
-        public async Task<ActionResult<Entities.Appointment>> DeleteAppointment([FromBody]Entities.Appointment item)
+        public async Task<ActionResult<Entities.Mail>> DeleteMail([FromBody]Entities.Mail item)
         {
             try
             {
 
-                var student = await _context.Appointments.FirstOrDefaultAsync(b => b.AppointmentID == item.AppointmentID);
-                _context.Appointments.Remove(student);
+                var student = await _context.Mails.FirstOrDefaultAsync(b => b.MailID == item.MailID);
+                _context.Mails.Remove(student);
                 await _context.SaveChangesAsync();
                 return NoContent();
             }
